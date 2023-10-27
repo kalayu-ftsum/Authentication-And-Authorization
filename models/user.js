@@ -4,6 +4,9 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
+  googleId: {
+    type: String
+  },
     username: {
       type: String,
       required: true,
@@ -25,7 +28,6 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
       type: String,
-      required: true,
       minlength: 6,
       maxlength: 1024
     }
@@ -34,6 +36,7 @@ const UserSchema = new mongoose.Schema({
   UserSchema.pre('save', async function preSave(next) {
     const user = this;
     if (!user.isModified('password')) return next();
+    if(!user.password) return next();
     try {
       var salt = bcrypt.genSaltSync(parseInt(process.env.SALT_ROUNDS));
       const hash = await bcrypt.hash(user.password, salt);
