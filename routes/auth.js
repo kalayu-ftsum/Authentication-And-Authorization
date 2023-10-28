@@ -73,4 +73,19 @@ try {
 }
 });
 
+
+
+router.get('/facebook',sessionMiddleware, passport.authenticate('facebook',{session:false}));
+
+router.get('/facebook/callback', sessionMiddleware,passport.authenticate('facebook',{session:false}),(req, res) => {
+try {
+    const { username, email } = req.user;
+    const token = jwt.sign({ username }, process.env.JWT_SECRET);
+    
+    return res.json({ user: { username }, token });
+    
+} catch (error) {
+    return res.status(500).send('Internal Server Error.');
+}
+});
 module.exports = router;

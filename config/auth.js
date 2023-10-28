@@ -9,5 +9,9 @@ module.exports={
     twitter:{
       clientID:process.env.twitter_client_id,
       clientSecret:process.env.twitter_client_secret
+    },
+    facebook:{
+      appID:process.env.facebook_app_id,
+      appSecret:process.env.facebook_app_secret
     }
 };
