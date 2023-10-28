@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken')
+const session = require('express-session');
 require('dotenv').config()
+
 
 const { passport } = require('../utils/auth');
 
@@ -43,6 +45,28 @@ try {
     const token = jwt.sign({ username, email }, process.env.JWT_SECRET);
     
     return res.json({ user: { username, email }, token });
+    
+} catch (error) {
+    return res.status(500).send('Internal Server Error.');
+}
+});
+
+
+const sessionMiddleware = session({
+    secret: process.env.secret,
+    resave: false,
+    saveUninitialized: true
+  });
+  
+
+router.get('/twitter',sessionMiddleware, passport.authenticate('twitter',{session:false}));
+
+router.get('/twitter/callback', sessionMiddleware,passport.authenticate('twitter',{session:false}),(req, res) => {
+try {
+    const { username, email } = req.user;
+    const token = jwt.sign({ username }, process.env.JWT_SECRET);
+    
+    return res.json({ user: { username }, token });
     
 } catch (error) {
     return res.status(500).send('Internal Server Error.');

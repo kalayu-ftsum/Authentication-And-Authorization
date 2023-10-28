@@ -2,7 +2,8 @@ const Passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy,
   ExtractJwt = require('passport-jwt').ExtractJwt;
-const GoogleStrategy = require('passport-google-oauth20').Strategy
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const TwitterStrategy=require('passport-twitter').Strategy;
 
 const User = require('../models/user');
 const authConfig = require('../config/auth')
@@ -66,6 +67,33 @@ Passport.use(new GoogleStrategy({
   return done(err);
 }}
 ));
+
+Passport.use(new TwitterStrategy({
+  consumerKey: authConfig.twitter.clientID,
+  consumerSecret: authConfig.twitter.clientSecret,
+  callbackURL: "http://localhost:3000/auth/twitter/callback",
+  passReqToCallback: true
+}, async (request, accessToken, refreshToken, profile, done) => {
+  try {
+    const user = await User.findOne({ twitterId: profile.id });
+    if (!user) {
+      try {
+        const newUser = await User.create({ twitterId: profile.id,username: profile.displayName });
+        if (!newUser) {
+          return done(null, false, { message: 'Error Creating profile' });
+        }
+        return done(null, newUser);
+      } catch (err) {
+        return done(err);
+      }
+    }
+  return done(null, profile);
+  } catch (err) {
+  return done(err);
+}}
+));
+
+
 
 module.exports = {
   initialize: Passport.initialize(),

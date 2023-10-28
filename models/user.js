@@ -7,6 +7,9 @@ const UserSchema = new mongoose.Schema({
   googleId: {
     type: String
   },
+  twitterId: {
+    type: String
+  },
     username: {
       type: String,
       required: true,
@@ -16,8 +19,6 @@ const UserSchema = new mongoose.Schema({
     },
     email: {
       type: String,
-      required: true,
-      unique: true,
       minlength: 6,
       maxlength: 255,
       unique:true,
