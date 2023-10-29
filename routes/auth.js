@@ -88,4 +88,19 @@ try {
     return res.status(500).send('Internal Server Error.');
 }
 });
+
+router.get('/logout',(req,res)=>{
+     /*
+       If you need to invalidate JWTs server-side, 
+       one approach is to maintain a blacklist of tokens that should no longer be considered valid, 
+       even if they haven't expired yet. When a user logs out, you add their token to this blacklist.
+       Then, in your authentication middleware, you check incoming tokens against this blacklist and reject any that are on it
+       This will negate the purpose of statelessness of jwt
+        */
+    res.logout(); // this only logout twitter authentication not the jwt
+    res.status(200).json({
+        msg:'Logged out'
+    });
+}
+);
 module.exports = router;
