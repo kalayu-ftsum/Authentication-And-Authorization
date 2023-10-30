@@ -34,8 +34,11 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     maxlength: 1024
   },
-  role:{
-    type:String
+  role: {
+    type: String
+  },
+  department: {
+    type: String
   }
 });
 

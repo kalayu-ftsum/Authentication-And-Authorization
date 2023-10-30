@@ -23,8 +23,15 @@ const RBACAuthorization=(role)=>{
 };
 
 
-
-function ABACAuthorization(attributes) {
+const validate=(rule,subject)=>{
+      // Check if user has all required attributes
+      const hasAccess = Object.entries(rule).every(([key, value]) =>
+      subject[key] == value
+      );
+  console.log(hasAccess)
+  return hasAccess ? true : false;
+};
+const ABACAuthorization=(rule)=> {
     return (req, res, next)=> {
         const token =  req.headers.authorization.split(' ')[1];
         if (token) {
@@ -32,7 +39,7 @@ function ABACAuthorization(attributes) {
             if (err) {
               // handle error
               res.status(403).json({msg:'Invalid token'});
-            } else if (!attributes.every(attr => user[attr])) {
+            } else if (!validate(rule,user)) {
                 res.status(403).json({msg:'Invalid token'});
             } else {
               req.user = user;

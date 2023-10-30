@@ -15,7 +15,7 @@ router.get('/protected',passport.authenticate('jwt', { session: false }), RBACAu
         }
 );
 
-router.get('/allowed',passport.authenticate('jwt', { session: false }), ABACAuthorization(["role"]),
+router.get('/allowed',passport.authenticate('jwt', { session: false }), ABACAuthorization({role: 'admin',department: 'engineering'}),
     (req, res) => {
         try {
             if(!req.user) return res.status(401).send('Unauthorized')
